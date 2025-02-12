@@ -1,0 +1,12 @@
+.card {
+    border-radius: 15px;
+}
+
+.btn {
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.alert {
+    border-radius: 8px;
+}
