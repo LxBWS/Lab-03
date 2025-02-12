@@ -15,13 +15,15 @@ contract Registration {
 
     // Modifier to restrict access to the organizer only
     modifier onlyOrganizer() {
-        // TODO
+        require(msg.sender == _organizer, "Only the organizer can perform this action");
         _;
     }
 
     // Initialize the contract with the ERC20 token contract address and the registration fee
     constructor(IERC20 token, uint256 registrationFee) {
-        // TODO
+        _token = token;
+        _organizer = msg.sender;
+        _registrationFee = registrationFee;
     }
 
     /**
@@ -56,7 +58,14 @@ contract Registration {
      * this contract.
      */
     function register() external {
-        // TODO
+        require(!_registered[msg.sender], "Already registered");
+        require(
+            _token.transferFrom(msg.sender, address(this), _registrationFee),
+            "Token transfer failed"
+        );
+
+        _registered[msg.sender] = true;
+        emit ParticipantRegistered(msg.sender);
     }
 
     /**
@@ -64,13 +73,14 @@ contract Registration {
      * the 'RegistrationFeeUpdated' event.
      */
     function updateRegistrationFee(uint256 newFee) external onlyOrganizer {
-        // TODO
+        _registrationFee = newFee;
+        emit RegistrationFeeUpdated(newFee);
     }
 
     /**
      * @dev Allows to check if a participant is registered in the event.
      */
     function isRegistered(address participant) external view returns (bool) {
-        // TODO
+        return _registered[participant];
     }
 }
